@@ -1,9 +1,10 @@
+setwd('/Users/mmartinez/Desktop/search_task/')
 library("ggplot2")
 library(ggplot2)
-setwd('/Users/mmartinez/Desktop/search_task/')
-data <- read.table("search_dataset.tsv",sep="\t", header=TRUE)
 options(scipen=999)
-head(data)
+
+data <- read.table("search_dataset.tsv",sep="\t", header=TRUE)
+
 ###Convert timestamp to date
 data$timestamp <- strptime(data$timestamp,"%Y%m%d%H%M%S")
 
@@ -15,19 +16,17 @@ data$TimeOfDay <- cut(as.numeric(data$Hour),
                       labels=c("Early Morning","Morning","Afternoon","Evening"),
                       include.lowest=T)
 
-
-
 ###Average data by Weekday + Hour for d3 visual
 averagedatedata <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, data = results, FUN= "median" )
 averagedatedata$Weekday <-factor(averagedatedata$Weekday, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"))
 
-
+##Heat map 
 p <- ggplot(averagedatedata,aes(x = Hour, y = Weekday, fill = event_timeToDisplayResults )) 
-p + geom_tile(aes(fill=event_timeToDisplayResults), colour="white") + scale_fill_gradient(low = "white",high = "steelblue")
+p <- p + geom_tile(aes(fill=event_timeToDisplayResults), colour="white") 
+p <- p + scale_fill_gradient(low = "white",high = "steelblue")
+p
 
 
-paste(datedata[order(datedata$Weekday),]$event_timeToDisplayResults,collapse=",")
-paste(seq(1,(168*100),by=100),collapse=",")
 
 
 
