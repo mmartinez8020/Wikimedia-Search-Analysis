@@ -67,7 +67,8 @@ resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..de
                           ylab("Density") +
                           ggtitle("Histogram of Time to Display Results") +
                           theme(axis.text=element_text(size=20),
-                                axis.title=element_text(size=40,face="bold")
+                                axis.title = element_text(size=40,face="bold"),
+                                plot.title = element_text(size =60, face="bold",lineheight=.8))
 resulthistogram
 
 ###Average data by Weekday + Hour for heatmap
