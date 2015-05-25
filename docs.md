@@ -4,6 +4,7 @@ author: "Mark Martinez"
 date: "May 24, 2015"
 output: html_document
 ---
+
 # Data Exploration and Cleaning
 In this analysis I will be looking over requests made on Wikimedia. The data set contains 1 million rows of requests made between November 25, 2014 and May 15, 2015.
 The purpose of this analysis is going to try and better understand user behavior on Wikimedia over time. In order to facilitate my time based analysis the following data has been added using the `timestamp`.
@@ -15,13 +16,7 @@ head(data[,c(4,6,7)])
 ```
 
 ```
-##    Weekday TimeOfDay    Month
-## 1 Saturday   Morning    March
-## 2  Tuesday   Evening    March
-## 3 Thursday   Evening February
-## 4   Sunday   Morning    April
-## 5 Saturday   Morning February
-## 6 Saturday   Evening    April
+## Error in `[.data.frame`(data, , c(4, 6, 7)): undefined columns selected
 ```
 
 
@@ -46,65 +41,37 @@ summary(data[ ,c(1,3)])
 
 Our `event_timeToDisplayResults` has negative values, which is implausible and seems to be an error in how this data was recorded and there are `timestamp` that are equal to zero. In an attempt to maintain the integrity of the data, I will be remove rows where `event_timeToDisplayResults` $< 0$ and `timesamp` $= 0$.   
 
-
 In addition to understanding our quantitative variables, I would also like to examine the frequency of our qualitative variables.
 
+
 ```r
-library(knitr)
-
-x <- data.frame(table(data$event_action))
-y <- data.frame(table(data$TimeOfDay))
-
-t1 = kable(x, format='html', output = FALSE)
-t2 = kable(y, format='html', output = FALSE)
-cat(c('<table><tr valign="top"><td>', t1, '</td><td>', t2, '</td><tr></table>'),
-    sep = '')
+grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 ```
 
-<table><tr valign="top"><td><table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Var1 </th>
-   <th style="text-align:right;"> Freq </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> start </td>
-   <td style="text-align:right;"> 163943 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> results </td>
-   <td style="text-align:right;"> 693723 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> click </td>
-   <td style="text-align:right;"> 142334 </td>
-  </tr>
-</tbody>
-</table></td><td><table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Var1 </th>
-   <th style="text-align:right;"> Freq </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Early Morning </td>
-   <td style="text-align:right;"> 218562 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Morning </td>
-   <td style="text-align:right;"> 209191 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Afternoon </td>
-   <td style="text-align:right;"> 294165 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Evening </td>
-   <td style="text-align:right;"> 278082 </td>
-  </tr>
-</tbody>
-</table></td><tr></table>
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+
+There is  a steady distribution of requests over the week and over every month in our date range, except the months of November and May which is due to our date range falling inbetween these months. When it comes to the distrubition of the types of actions on the website, there are significant amount of result requests compared to start and click requests. This could be a result of users making search queries and not finding their target topic. There was a total of 4.23 result pages served for every start request. 
+
+I wanted to examine this data in greater detail by analyzing changes over the week and clock. I have done this by creating a heat map for the time take to to display a results page. What I did was aggregated the data by hour and weekday and took the median for every interval. The reasoning behind using the median as opposed to the average is because as we saw earlier in the time histogram, there are a lot of our outlying values that could distort our analysis.
+
+
+```r
+resulthistogram
+```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
+
+```r
+eventheat
+```
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
+
+```r
+heataction
+```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
