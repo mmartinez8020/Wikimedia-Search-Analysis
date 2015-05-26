@@ -14,7 +14,7 @@ body, td {
 
 </style>
 <h1 align="center">Wikimedia Search Analysis</h1>
-<h2 align="center"" font-weight= "normal">Mark Martinez</h2>
+<h2 align="center">Mark Martinez</h2>
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wikimedia_Foundation_RGB_logo_with_text.svg/400px-Wikimedia_Foundation_RGB_logo_with_text.svg.png" height="300" width="300">
 
 
@@ -52,13 +52,13 @@ First and foremost, I want to get a general idea of the data I will be examining
 ##  NA's   :204                   NA's   :306277
 ```
 
-What stands out here is that `event_timeToDisplayResults` has negative values, which is implausible and likely an error in how the data was recorded. There are also `timestamp` dates that are equal to NA. In an attempt to maintain the integrity of the data, I will be removing the rows where `event_timeToDisplayResults` $< 0$ and `timestamp` $= NA$.   
+What stands out here is that `event_timeToDisplayResults` has negative values, which is implausible and likely an error in how this data was recorded. There are also `timestamp` dates that are equal to NA. In an attempt to maintain the integrity of the data, I will removing the rows where `event_timeToDisplayResults` $< 0$ and `timestamp` $= NA$.   
 
-In addition to understanding our quantitative variables, I also want to inspect the frequency of our qualitative variables.
+In addition to understanding our quantitative variables, I will also want to see the frequency of our qualitative variables.
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
-There is a steady distribution of requests over the week and over every month in our date range, except for November and May. This is due to our date range falling in-between these months. When it comes to the distribution of the types of actions on the website, there is a substantial difference between result requests and the other two actions, start and click. This might be a consequence of users making search queries and not finding their target topic or it could just be that users are using Wikimedia several times during a session.
+There is a steady distribution of requests over the week and over every month in our date range, except for November and May. This is due to our date range falling in-between these months. When it comes to the distribution of the types of actions on the website, there is a substantial difference between result requests and the other two actions, start and click. This might be a consequence of users making search queries and not finding their target topic. There was a total of 4.23 result pages served for every start request. 
 
 Looking at the data from beginning to end shows that there is a high correlation between the number of clicks, results, and start queries being made. This means that these counts moved in the same direction over time. Another thing to notice is the large jump and fall in December and mid-April across all actions.  
 
@@ -70,23 +70,22 @@ One of the prime variables in this analysis is `event_timeToDisplayResults`. Thi
 
 The one thing to notice here is the right skewed distribution caused by extreme values. Given this, if we wanted to summarize this data by using a center measure, the median would be most appropriate since the median is not sensitive to outliers.
 
-I wanted to examine this data in greater detail by analyzing changes over the week and clock. I have done this by creating a heat map for `event_timeToDisplayResults`. What I did here was I aggregated the data by hour and weekday and took the median for each interval. The reasoning behind using the median as opposed to the average is because as we saw earlier in the `event_timeToDisplayResults` histogram, there are a lot of outlying values that could distort this analysis.
+I wanted to examine this data in greater detail by analyzing changes over the week and clock. I have done this by creating a heat map for `event_timeToDisplayResults`. What I did here was I aggregated the data by hour and weekday and took the median for each interval. The reasoning behind using the median as opposed to the average is because as we saw earlier in the time histogram, there are a lot of outlying values that could distort this analysis.
 
-The following heat map exposes an interesting insight with respect to `event_timeToDisplayResults` over the week. The insignt is that there is a higher level of `event_timeToDisplayResults` between approximately 6:00AM - 5:00PM. Saturday and Sunday have a slightly lower level of `event_timeToDisplayResults` between this clock time but still follow a similar pattern during the day. 
+The following heat map exposes an interesting insight with respect to `event_timeToDisplayResults` over the week. The insignt is that there is a higher level of `event_timeToDisplayResults` between approximately 6:00AM - 5:00PM. Saturday and Sunday have a slightly lower level of `event_timeToDisplayResults` between this clock time but still follow similar pattern during the day. 
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
-I took same approach when exploring the frequency of requests (results, clicks, and starts) throughout the week. The heat map for this inspection shows us that users are making most of their requests during 12:00PM - 11PM. The highest level of requests occurs during this time on Sunday.
+I took a similar approach in exploring the frequency of requests (results, clicks, and starts) throughout the week. The heat map for this inspection shows us that users are making most of their requests during 12:00PM - 11PM. The highest level of requests occurs during this time on Sunday.
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
 
-<h2 align="center">Recommendation</h2>
+# Recommendations
 
 After digging into the data, I think there are a few things that need to be investigated further.
 
-* The negative values for `event_timeToDisplayResults`
-* The difference in frequency for the different event_actions
+* The negative values for `event_timeToDisplayResults` 
 * The dramatic rise and fall of queries in December and mid-April
 * The higher `event_timeToDisplayResults` during 6AM - 5PM
 * The reason for high use between 12PM - 11PM
