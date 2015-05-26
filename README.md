@@ -17,4 +17,4 @@ result in the display of a results page.
 Using this dataset, eke out any insights you can about the users of search, the way they use the system, and the way the system responds to them, looking particularly at the seasonality and temporal patterns of user behaviour. Present these insights through text and/or visualisations in a way understandable by non-scientific consumers and reproducible by other analysts or engineers. Obviously this is a very wide task; don't spend more than a couple of hours on it, and use whichever tools you want.
 
 Once you've completed the task to your satisfaction, submit it through the Greenhouse tools that manage your application. Do *not* submit it through a GitHub pull request or similar.# Wikimedia-Search-Analysis
-# Wikimedia-Search-Analysis
+
