@@ -105,31 +105,22 @@ timeseries <- data.frame(table(requestwithoutmonths$week,requestwithoutmonths$ev
 timeseries$Var1 <- as.Date(timeseries$Var1)
 
 ##Plotting
-timeclicks <- ggplot(timeseries[timeseries$Var2 == "click",],aes(x = Var1,y = Freq)) + 
-                                             xlab("Clicks") +
-                                             geom_line() +
-                                             theme(axis.text=element_text(size=20),
-                                                  axis.title=element_text(size=40,face="bold"),
-                                                  legend.text=element_text(size=20),
-                                                  legend.title=element_text(size=20)) 
+timeseriesplot <- function(action, label){
+  plot <- ggplot(df[df$Var2 == action,],aes(x=Var1,y=Freq)) +
+            xlab(label) +
+            geom_line() +
+            theme(axis.text=element_text(size=20),
+            axis.title=element_text(size=40,face="bold"),
+            legend.text=element_text(size=20),
+            legend.title=element_text(size=20)) 
+  return(plot)
+}
+
+timestarts <- timeseriesplot("start","Starts")
+timeclicks <- timeseriesplot("click","Clicks")
+timeresults <- timeseriesplot("results","Results")
 
 
-
-timeresults <- ggplot(timeseries[timeseries$Var2 == "results",],aes(x=Var1,y=Freq)) + 
-                                            xlab("Results") +
-                                            geom_line() +
-                                            theme(axis.text=element_text(size = 20),
-                                                  axis.title=element_text(size = 40,face = "bold"),
-                                                  legend.text=element_text(size = 20),
-                                                  legend.title=element_text(size = 20)) 
-
-timestarts <- ggplot(timeseries[timeseries$Var2 == "start",],aes(x = Var1,y = Freq)) +
-                                            xlab("Starts") +
-                                            geom_line() +
-                                            theme(axis.text=element_text(size = 20),
-                                                  axis.title=element_text(size = 40,face = "bold"),
-                                                  legend.text=element_text(size = 20),
-                                                  legend.title=element_text(size = 20)) 
 
 grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 60)))
  
