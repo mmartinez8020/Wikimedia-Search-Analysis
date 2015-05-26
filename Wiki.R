@@ -1,38 +1,35 @@
-setwd('/Users/mmartinez/Desktop/Wikimedia_Analysis/')
-library(ggplot2)
-library(dplyr)
-library(markdown)
-library(reshape2)
-library(gridExtra)
-library(lubridate)
-require(knitr) # required for knitting from rmd to md
-require(markdown) # required for md to html 
+setwd('/Users/mmartinez/Desktop/Wikimedia-Search-Analysis')
+require(ggplot2)
+require(dplyr)
+require(markdown)
+require(reshape2)
+require(gridExtra)
+require(knitr) 
+require(markdown) 
 options(scipen=999)
 
+request <- read.table("search_dataset.tsv", sep="\t", header=TRUE)
 
-
-data <- read.table("search_dataset.tsv", sep="\t", header=TRUE)
-summary(data)
 ###Convert timestamp to date
-data$timestamp <- strptime(data$timestamp,"%Y%m%d%H%M%S")
+request$timestamp <- strptime(request$timestamp,"%Y%m%d%H%M%S")
 
 ###Extract weekday, hour, and month from date to create two new columns and date formatting
-data$Weekday <- weekdays(data$timestamp)
-data$Weekday <- factor(data$Weekday, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"))
+request$Weekday <- weekdays(request$timestamp)
+request$Weekday <- factor(request$Weekday, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"))
 
-data$Hour <- substr(data$timestamp , 12,13)
-data$Month <- months(data$timestamp)
-data$Month <- factor(data$Month, levels= c("November","December","January","February","March","April","May"))
-head(data)
+request$Hour <- substr(request$timestamp , 12,13)
+request$Month <- months(request$timestamp)
+request$Month <- factor(request$Month, levels= c("November","December","January","February","March","April","May"))
+head(request)
 
 ##Bar plots
 
-plottingfunction <- function(data, xlabel){
-  newDf <- data.frame(table(data))
-  orders <- newDf[order(newDf$Freq, decreasing = FALSE), ]$data
-  newDf$data <- factor(newDf$data, orders)
+plottingfunction <- function(request, xlabel){
+  newDf <- data.frame(table(request))
+  orders <- newDf[order(newDf$Freq, decreasing = FALSE), ]$request
+  newDf$request <- factor(newDf$request, orders)
   
-  plot <- ggplot(newDf, aes(x = data, y = Freq)) +
+  plot <- ggplot(newDf, aes(x = request, y = Freq)) +
     geom_bar(fill="lightblue", colour="black",stat = "identity") +
     xlab(xlabel) +
     ylab("Frequency") +
@@ -44,16 +41,16 @@ plottingfunction <- function(data, xlabel){
   return(plot)
 }
 
-eventactionbar <- plottingfunction(data$event_action,"Event Action")
-weekdaybar <- plottingfunction(data$Weekday,"Weekday")
-monthbar <- plottingfunction(data$Month,"Month")
+eventactionbar <- plottingfunction(request$event_action,"Event Action")
+weekdaybar <- plottingfunction(request$Weekday,"Weekday")
+monthbar <- plottingfunction(request$Month,"Month")
 grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 
 
 #####Histogram by Month
 
-resulthist <- data[data$event_action == "results" & !(data$event_timeToDisplayResults < 2000), ] #Cut off long tail
-nrow(resulthist)/nrow(data)
+resulthist <- request[request$event_action == "results" & !(request$event_timeToDisplayResults < 2000), ] #Cut off long tail
+nrow(resulthist)/nrow(request)
 resulthist <- resulthist[resulthist$event_timeToDisplayResults > 0, ]#Remove values less than 0
 
 resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..density..)) + 
@@ -66,14 +63,14 @@ resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..de
                                 plot.title = element_text(size =60, face="bold",lineheight=.8))
 resulthistogram
 
-###Average data by Weekday + Hour for heatmap
+###Average request by Weekday + Hour for heatmap
 
-results <- data[data$event_action == "results", ]
-averagedatedata <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, data = results, FUN= "median" )
+results <- request[request$event_action == "results", ]
+averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, request = results, FUN= "median" )
 
 ##Heat map 
-colnames(averagedatedata)[3] <- "Median"
-eventheat <- ggplot(averagedatedata,aes(x = Hour, y = Weekday, fill = Median )) + 
+colnames(averagedaterequest)[3] <- "Median"
+eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median )) + 
                     geom_tile(aes(fill=Median), colour="white") +
                     scale_fill_gradient(low = "white",high = "steelblue") +
                     theme(axis.text=element_text(size=20),
@@ -84,7 +81,7 @@ eventheat
 
 ##Heat map of freq of actions
 
-freqofactions <- data[ ,c(4,5)] %>% group_by(Weekday,Hour)  %>%
+freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday,Hour)  %>%
   summarize(Count = n())
 head(freqofactions)
 heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
@@ -101,12 +98,12 @@ heataction
 #########Time series############
 ################################
 
-##Data preparation
-datawithoutmonths <- data[!(data$Month == "November" | data$Month == "May"), ] ##Remove November and May dates from df
-datawithoutmonths$date  <- as.Date(datawithoutmonths$timestamp)
+##request preparation
+requestwithoutmonths <- request[!(request$Month == "November" | request$Month == "May"), ] ##Remove November and May dates from df
+requestwithoutmonths$date  <- as.Date(requestwithoutmonths$timestamp)
 
-datawithoutmonths$week <- cut(datawithoutmonths[,"date"],breaks = 'weeks')
-df <- data.frame(table(datawithoutmonths$week,datawithoutmonths$event_action))
+requestwithoutmonths$week <- cut(requestwithoutmonths[,"date"],breaks = 'weeks')
+df <- data.frame(table(requestwithoutmonths$week,requestwithoutmonths$event_action))
 df$Var1 <- as.Date(df$Var1)
 
 ##Plotting
@@ -118,7 +115,7 @@ timeclicks <- ggplot(df[df$Var2 == "click",],aes(x=Var1,y=Freq)) +
                                                   legend.text=element_text(size=20),
                                                   legend.title=element_text(size=20)) 
 
-head(data[,c(4,6,7)])
+
 #time series for clicks
 timeresults <- ggplot(df[df$Var2 == "results",],aes(x=Var1,y=Freq)) + 
                                             xlab("Results") +

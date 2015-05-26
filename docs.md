@@ -28,13 +28,7 @@ The purpose of this analysis is to better understand user behavior on Wikimedia 
 
 
 ```
-##    Weekday Hour    Month
-## 1 Saturday   08    March
-## 2  Tuesday   22    March
-## 3 Thursday   20 February
-## 4   Sunday   10    April
-## 5 Saturday   09 February
-## 6 Saturday   22    April
+## Error in data[, c(4, 5, 6)]: object of type 'closure' is not subsettable
 ```
 
 First and foremost, I want to get a general idea of the data I will be examining by getting a summary of my quantitative variables, which in this case are `event_timeToDisplayResults` and `timestamp`.   
@@ -42,14 +36,7 @@ First and foremost, I want to get a general idea of the data I will be examining
 
 
 ```
-##    timestamp                   event_timeToDisplayResults
-##  Min.   :2014-11-25 21:17:51   Min.   : -17501.0         
-##  1st Qu.:2015-01-19 15:32:04   1st Qu.:    333.0         
-##  Median :2015-02-28 05:14:06   Median :    446.0         
-##  Mean   :2015-02-27 07:01:12   Mean   :    755.7         
-##  3rd Qu.:2015-04-07 21:33:47   3rd Qu.:    620.0         
-##  Max.   :2015-05-15 11:34:39   Max.   :1715767.0         
-##  NA's   :204                   NA's   :306277
+## Error in data[, c(1, 3)]: object of type 'closure' is not subsettable
 ```
 
 What stands out here is that `event_timeToDisplayResults` has negative values, which is implausible and likely an error in how the data was recorded. There are also `timestamp` dates that are equal to NA. In an attempt to maintain the integrity of the data, I will be removing the rows where `event_timeToDisplayResults` $< 0$ and `timestamp` $= NA$.   
@@ -74,7 +61,10 @@ I wanted to examine this data in greater detail by analyzing changes over the we
 
 The following heat map exposes an interesting insight with respect to `event_timeToDisplayResults` over the week. The insignt is that there is a higher level of `event_timeToDisplayResults` between approximately 6:00AM - 5:00PM. Saturday and Sunday have a slightly lower level of `event_timeToDisplayResults` between this clock time but still follow a similar pattern during the day. 
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+
+```
+## Error in eval(expr, envir, enclos): object 'eventheat' not found
+```
 
 I took same approach when exploring the frequency of requests (results, clicks, and starts) throughout the week. The heat map for this inspection shows us that users are making most of their requests during 12:00PM - 11PM. The highest level of requests occurs during this time on Sunday.
 
