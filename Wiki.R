@@ -26,7 +26,6 @@ request$Month <- factor(request$Month, levels= c("November","December","January"
 ###Bar plots
 
 plottingfunction <- function(request, xlabel){
-  
   newDf <- data.frame(table(request))
   orders <- newDf[order(newDf$Freq, decreasing = FALSE), ]$request
   newDf$request <- factor(newDf$request, orders)
@@ -50,7 +49,7 @@ monthbar <- plottingfunction(request$Month, "Month")
 grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 
 
-#####Histogram of event_timeToDisplayResults
+### Histogram of event_timeToDisplayResults
 resulthist <- request[request$event_action == "results" & !(request$event_timeToDisplayResults < 2000), ] #Cut off long tail
 resulthist <- resulthist[resulthist$event_timeToDisplayResults > 0, ]
 
@@ -64,12 +63,12 @@ resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..de
                                 plot.title = element_text(size =60, face="bold",lineheight=.8))
 
 
-###Average request by Weekday + Hour for heat map
+## Average request by Weekday + Hour for heat map
 
 results <- request[request$event_action == "results", ]
 averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, request = results, FUN= "median" )
 
-##Heat map for event_timeToDisplayResults
+## Heat map for event_timeToDisplayResults
 colnames(averagedaterequest)[3] <- "Median"
 eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median )) + 
                     geom_tile(aes(fill=Median), colour="white") +
@@ -78,9 +77,9 @@ eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median 
                           axis.title=element_text(size=40,face="bold"),
                           legend.text=element_text(size=20),
                           legend.title=element_text(size=20)) 
-t
 
-##Heat map of frequency of actions
+
+## Heat map of frequency of actions
 
 freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
   summarize(Count = n())
@@ -88,7 +87,6 @@ freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
 heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
                       geom_tile(aes(fill=Count), colour = "white") +
                       scale_fill_gradient(low = "white",high = "steelblue") +
-                      labs(colour = "Median") +
                       theme(axis.text=element_text(size=20),
                             axis.title=element_text(size=40,face = "bold"),
                             legend.text=element_text(size=20),
@@ -96,7 +94,7 @@ heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
 
 
 
-###Time series
+### Time series
 
 ##request preparation
 requestwithoutmonths <- request[!(request$Month == "November" | request$Month == "May"), ] ##Remove November and May dates from df
@@ -116,7 +114,7 @@ timeclicks <- ggplot(timeseries[timeseries$Var2 == "click",],aes(x = Var1,y = Fr
                                                   legend.title=element_text(size=20)) 
 
 
-#time series for clicks
+
 timeresults <- ggplot(timeseries[timeseries$Var2 == "results",],aes(x=Var1,y=Freq)) + 
                                             xlab("Results") +
                                             geom_line() +
