@@ -49,7 +49,7 @@ grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 
 
 ###Histogram of event_timeToDisplayResults
-resulthist <- request[request$event_action == "results" & !(request$event_timeToDisplayResults < 2000), ] #Cut off long tail
+resulthist <- request[request$event_action == "results" & (request$event_timeToDisplayResults < 2000), ] #Cut off long tail
 resulthist <- resulthist[resulthist$event_timeToDisplayResults > 0, ]
 
 resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..density..)) + 
@@ -61,10 +61,11 @@ resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..de
                             axis.title = element_text(size=40,face="bold"),
                             plot.title = element_text(size =60, face="bold",lineheight=.8))
 
-
+resulthistogram
 ###Average request by Weekday + Hour for heat map
 results <- request[request$event_action == "results", ]
-averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, request = results, FUN= "median" )
+averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, data = results, FUN= "median" )
+
 
 ###Heat map for event_timeToDisplayResults
 colnames(averagedaterequest)[3] <- "Median"
@@ -76,7 +77,7 @@ eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median 
                     legend.text=element_text(size=20),
                     legend.title=element_text(size=20)) 
 
-
+eventheat
 ###Heat map of frequency of actions
 
 freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
@@ -101,10 +102,10 @@ requestwithoutmonths$date  <- as.Date(requestwithoutmonths$timestamp)
 requestwithoutmonths$week <- cut(requestwithoutmonths[,"date"],breaks = 'weeks')
 timeseries <- data.frame(table(requestwithoutmonths$week,requestwithoutmonths$event_action))
 timeseries$Var1 <- as.Date(timeseries$Var1)
-
+head(timeseries)
 ##Plotting
 timeseriesplot <- function(action, label){
-  plot <- ggplot(df[df$Var2 == action,],aes(x=Var1,y=Freq)) +
+  plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x=Var1,y=Freq)) +
             xlab(label) +
             geom_line() +
             theme(axis.text=element_text(size=20),

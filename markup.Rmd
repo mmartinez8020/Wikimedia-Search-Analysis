@@ -24,19 +24,19 @@ body, td {
 opts_chunk$set(echo=FALSE)
 ```
 
-In this analysis I will be reviewing 1 million Wikimedia search requests made between November 25, 2014 and May 15, 2015.
-The purpose of this analysis is to better understand user behavior on Wikimedia over time. In order to facilitate my time based analysis the following data has been added using the `timestamp` column.   
+In this analysis I will be reviewing 1 million Wikimedia requests made between November 25, 2014 and May 15, 2015.
+The purpose of this analysis is to better understand user behavior on Wikimedia over time. In order to facilitate my time-based analysis the following data has been added using the `timestamp` column.   
 
 
 ```{r, echo = FALSE}
-head(data[,c(4,5,6)])
+head(request[,c(4,5,6)])
 ```   
 
 First and foremost, I want to get a general idea of the data I will be examining by getting a summary of my quantitative variables, which in this case are `event_timeToDisplayResults` and `timestamp`.   
 
 
 ```{r}
-summary(data[ ,c(1,3)])
+summary(request[ ,c(1,3)])
 ```
 
 What stands out here is that `event_timeToDisplayResults` has negative values, which is implausible and likely an error in how the data was recorded. There are also `timestamp` dates that are equal to NA. In an attempt to maintain the integrity of the data, I will be removing the rows where `event_timeToDisplayResults` $< 0$ and `timestamp` $= NA$.   
@@ -47,7 +47,7 @@ In addition to understanding our quantitative variables, I also want to inspect 
 grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 ```
 
-There is a steady distribution of requests over the week and over every month in our date range, except for November and May. This is due to our date range falling in-between these months. When it comes to the distribution of the types of actions on the website, there is a substantial difference between result requests and the other two actions, start and click. This might be a consequence of users making search queries and not finding their target topic or it could just be that users are using Wikimedia several times during a session.
+There is a steady distribution of requests over the week and over every month in our date range, except for November and May. This is due to our date range falling in-between these months. When it comes to the distribution of the types of actions on the website, there is a substantial difference between result requests and the other two actions, start and click. This might be a consequence of users making search queries and not finding their target topic or it could just be that users are using Wikimedia search several times during a session.
 
 Looking at the data from beginning to end shows that there is a high correlation between the number of clicks, results, and start queries being made. This means that these counts moved in the same direction over time. Another thing to notice is the large jump and fall in December and mid-April across all actions.  
 
@@ -80,13 +80,13 @@ heataction
 ```
 
 
-<h2 align="center">Recommendation</h2>
+<h2 align="center">Recommendations</h2>
 
 After digging into the data, I think there are a few things that need to be investigated further.
 
 * The negative values for `event_timeToDisplayResults`
-* The difference in frequency for the different event_actions
-* The dramatic rise and fall of queries in December and mid-April
+* The difference in frequency for the different `event_actions`
+* The dramatic rise and fall of requests in December and mid-April
 * The higher `event_timeToDisplayResults` during 6AM - 5PM
-* The reason for high use between 12PM - 11PM
+* The reason for high use between 11AM - 10PM
 
