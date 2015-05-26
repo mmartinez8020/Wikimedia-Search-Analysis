@@ -3,46 +3,90 @@ title: "Wikimedia Analysis"
 author: "Mark Martinez"
 date: "May 24, 2015"
 output: html_document
+fontsize: 12pt
+
 ---
+<style type="text/css">
 
-# Data Exploration and Cleaning
-In this analysis I will be looking over requests made on Wikimedia. The data set contains 1 million rows of requests made between November 25, 2014 and May 15, 2015.
-The purpose of this analysis is going to try and better understand user behavior on Wikimedia over time. In order to facilitate my time based analysis the following data has been added using the `timestamp`.
+body, td {
+   font-size: 14px;
+}
+
+</style>
+<h1 align="center">Wikimedia Search Analysis</h1>
+<h2 align="center"" font-weight= "normal">Mark Martinez</h2>
+<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wikimedia_Foundation_RGB_logo_with_text.svg/400px-Wikimedia_Foundation_RGB_logo_with_text.svg.png" height="300" width="300">
 
 
-```{r}
-head(data[,c(4,6,7)])
-````
 
 
-First and foremost I want to get a general idea of the data I will examing by getting a general summary of my quantitative variables, which in this case are `event_timeToDisplayResults` and `timestampe`. 
+```{r, echo=FALSE} 
+opts_chunk$set(echo=FALSE)
+```
+
+In this analysis I will be reviewing 1 million Wikimedia search requests made between November 25, 2014 and May 15, 2015.
+The purpose of this analysis is to better understand user behavior on Wikimedia over time. In order to facilitate my time based analysis the following data has been added using the `timestamp` column.   
+
+
+```{r, echo = FALSE}
+head(data[,c(4,5,6)])
+```   
+
+First and foremost, I want to get a general idea of the data I will be examining by getting a summary of my quantitative variables, which in this case are `event_timeToDisplayResults` and `timestamp`.   
 
 
 ```{r}
 summary(data[ ,c(1,3)])
 ```
 
-Our `event_timeToDisplayResults` has negative values, which is implausible and seems to be an error in how this data was recorded and there are `timestamp` that are equal to zero. In an attempt to maintain the integrity of the data, I will be remove rows where `event_timeToDisplayResults` $< 0$ and `timesamp` $= 0$.   
+What stands out here is that `event_timeToDisplayResults` has negative values, which is implausible and likely an error in how the data was recorded. There are also `timestamp` dates that are equal to NA. In an attempt to maintain the integrity of the data, I will be removing the rows where `event_timeToDisplayResults` $< 0$ and `timestamp` $= NA$.   
 
-In addition to understanding our quantitative variables, I would also like to examine the frequency of our qualitative variables.
+In addition to understanding our quantitative variables, I also want to inspect the frequency of our qualitative variables.
 
 ```{r ,fig.height=10, fig.width=20}
 grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 ```
 
-There is  a steady distribution of requests over the week and over every month in our date range, except the months of November and May which is due to our date range falling inbetween these months. When it comes to the distrubition of the types of actions on the website, there are significant amount of result requests compared to start and click requests. This could be a result of users making search queries and not finding their target topic. There was a total of 4.23 result pages served for every start request. 
+There is a steady distribution of requests over the week and over every month in our date range, except for November and May. This is due to our date range falling in-between these months. When it comes to the distribution of the types of actions on the website, there is a substantial difference between result requests and the other two actions, start and click. This might be a consequence of users making search queries and not finding their target topic or it could just be that users are using Wikimedia several times during a session.
 
-I wanted to examine this data in greater detail by analyzing changes over the week and clock. I have done this by creating a heat map for the time take to to display a results page. What I did was aggregated the data by hour and weekday and took the median for every interval. The reasoning behind using the median as opposed to the average is because as we saw earlier in the time histogram, there are a lot of our outlying values that could distort our analysis.
+Looking at the data from beginning to end shows that there is a high correlation between the number of clicks, results, and start queries being made. This means that these counts moved in the same direction over time. Another thing to notice is the large jump and fall in December and mid-April across all actions.  
+
+```{r,fig.height=20, fig.width=20}
+grid.arrange(timeclicks,timestarts,timeresults,
+             main = textGrob("Event Action by Week",
+             gp=gpar(fontsize=60)))
+```
+
+One of the prime variables in this analysis is `event_timeToDisplayResults`. This is an important variable because if `event_timeToDisplayResults` is consistently high, users can grow impatient and abandon a webpage. The following histogram shows the distribution of `event_timeToDisplayResults`. For visual purposes I have removed values greater than 2000. These removed values represent only 2.4% of the data.
 
 ```{r,fig.height=10, fig.width=20}
 resulthistogram
 ```
 
+The one thing to notice here is the right skewed distribution caused by extreme values. Given this, if we wanted to summarize this data by using a center measure, the median would be most appropriate since the median is not sensitive to outliers.
+
+I wanted to examine this data in greater detail by analyzing changes over the week and clock. I have done this by creating a heat map for `event_timeToDisplayResults`. What I did here was I aggregated the data by hour and weekday and took the median for each interval. The reasoning behind using the median as opposed to the average is because as we saw earlier in the `event_timeToDisplayResults` histogram, there are a lot of outlying values that could distort this analysis.
+
+The following heat map exposes an interesting insight with respect to `event_timeToDisplayResults` over the week. The insignt is that there is a higher level of `event_timeToDisplayResults` between approximately 6:00AM - 5:00PM. Saturday and Sunday have a slightly lower level of `event_timeToDisplayResults` between this clock time but still follow a similar pattern during the day. 
+
 ```{r,fig.height=10, fig.width=20}
 eventheat
 ```
 
+I took same approach when exploring the frequency of requests (results, clicks, and starts) throughout the week. The heat map for this inspection shows us that users are making most of their requests during 12:00PM - 11PM. The highest level of requests occurs during this time on Sunday.
+
 ```{r,fig.height=10, fig.width=20}
 heataction
 ```
+
+
+<h2 align="center">Recommendation</h2>
+
+After digging into the data, I think there are a few things that need to be investigated further.
+
+* The negative values for `event_timeToDisplayResults`
+* The difference in frequency for the different event_actions
+* The dramatic rise and fall of queries in December and mid-April
+* The higher `event_timeToDisplayResults` during 6AM - 5PM
+* The reason for high use between 12PM - 11PM
 
