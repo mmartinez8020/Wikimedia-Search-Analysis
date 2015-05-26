@@ -53,13 +53,13 @@ resulthist <- request[request$event_action == "results" & !(request$event_timeTo
 resulthist <- resulthist[resulthist$event_timeToDisplayResults > 0, ]
 
 resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..density..)) + 
-                          geom_histogram(fill="white", colour="black") + 
-                          xlab("Time to Display Results") + 
-                          ylab("Density") +
-                          ggtitle("Histogram of Time to Display Results") +
-                          theme(axis.text=element_text(size=20),
-                                axis.title = element_text(size=40,face="bold"),
-                                plot.title = element_text(size =60, face="bold",lineheight=.8))
+                      geom_histogram(fill="white", colour="black") + 
+                      xlab("Time to Display Results") + 
+                      ylab("Density") +
+                      ggtitle("Histogram of Time to Display Results") +
+                      theme(axis.text=element_text(size=20),
+                            axis.title = element_text(size=40,face="bold"),
+                            plot.title = element_text(size =60, face="bold",lineheight=.8))
 
 
 ###Average request by Weekday + Hour for heat map
@@ -69,12 +69,12 @@ averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, req
 ###Heat map for event_timeToDisplayResults
 colnames(averagedaterequest)[3] <- "Median"
 eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median )) + 
-                    geom_tile(aes(fill=Median), colour="white") +
-                    scale_fill_gradient(low = "white",high = "steelblue") +
-                    theme(axis.text=element_text(size=20),
-                          axis.title=element_text(size=40,face="bold"),
-                          legend.text=element_text(size=20),
-                          legend.title=element_text(size=20)) 
+              geom_tile(aes(fill=Median), colour="white") +
+              scale_fill_gradient(low = "white",high = "steelblue") +
+              theme(axis.text=element_text(size=20),
+                    axis.title=element_text(size=40,face="bold"),
+                    legend.text=element_text(size=20),
+                    legend.title=element_text(size=20)) 
 
 
 ###Heat map of frequency of actions
@@ -83,12 +83,12 @@ freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
   summarize(Count = n())
 
 heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
-                      geom_tile(aes(fill=Count), colour = "white") +
-                      scale_fill_gradient(low = "white",high = "steelblue") +
-                      theme(axis.text=element_text(size=20),
-                            axis.title=element_text(size=40,face = "bold"),
-                            legend.text=element_text(size=20),
-                            legend.title=element_text(size=20)) 
+                geom_tile(aes(fill=Count), colour = "white") +
+                scale_fill_gradient(low = "white",high = "steelblue") +
+                theme(axis.text=element_text(size=20),
+                      axis.title=element_text(size=40,face = "bold"),
+                      legend.text=element_text(size=20),
+                      legend.title=element_text(size=20)) 
 
 
 
