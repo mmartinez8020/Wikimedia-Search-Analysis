@@ -6,6 +6,7 @@ require(reshape2)
 require(gridExtra)
 require(knitr) 
 require(markdown) 
+require(rmarkdown)
 options(scipen=999)
 
 request <- read.table("search_dataset.tsv", sep="\t", header=TRUE)
@@ -57,9 +58,9 @@ resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..de
                       xlab("Time to Display Results") + 
                       ylab("Density") +
                       ggtitle("Histogram of Time to Display Results") +
-                      theme(axis.text=element_text(size=20),
-                            axis.title = element_text(size=40,face="bold"),
-                            plot.title = element_text(size =60, face="bold",lineheight=.8))
+                      theme(axis.text=element_text(size=15),
+                            axis.title = element_text(size=30,face="bold"),
+                            plot.title = element_text(size =45, face="bold",lineheight=.8))
 
 resulthistogram
 ###Average request by Weekday + Hour for heat map
@@ -108,10 +109,10 @@ timeseriesplot <- function(action, label){
   plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x=Var1,y=Freq)) +
             xlab(label) +
             geom_line() +
-            theme(axis.text=element_text(size=20),
-            axis.title=element_text(size=40,face="bold"),
-            legend.text=element_text(size=20),
-            legend.title=element_text(size=20)) 
+            theme(axis.text=element_text(size=10),
+            axis.title=element_text(size=20),
+            legend.text=element_text(size=10),
+            legend.title=element_text(size=10)) 
   return(plot)
 }
 
@@ -121,10 +122,8 @@ timeresults <- timeseriesplot("results","Results")
 
 
 
-grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 60)))
+grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 20)))
  
 knit('markup.rmd', 'docs.md')
-markdownToHTML('docs.md', 'WikimediaAnalysis.pdf', header = TRUE)
-install.packages("rmarkdown")
-library('rmarkdown')
+markdownToHTML('docs.md', 'WikimediaAnalysis.html', header = TRUE)
 render("markup.Rmd", "pdf_document")

@@ -1,21 +1,23 @@
 ---
 title: "Wikimedia Analysis"
 author: "Mark Martinez"
-date: "May 24, 2015"
-output: pdf_document
-fontsize: 12pt
+header-includes:
+   - \usepackage{graphicx}
+output:
+    pdf_document
 ---
 
-
-![alt text](http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wikimedia_Foundation_RGB_logo_with_text.svg/400px-Wikimedia_Foundation_RGB_logo_with_text.svg.png)
-
-
+\graphicspath{ {/Users/mmartinez/Desktop/} }
+\begin{center}
+  \includegraphics[width=5cm,height=5cm]{400px-Wikimedia_Foundation_RGB_logo_with_text.png}
+\end{center}  
+  
 ```{r, echo=FALSE} 
 opts_chunk$set(echo=FALSE)
 ```
 
 In this analysis I will be reviewing 1 million Wikimedia requests made between November 25, 2014 and May 15, 2015.
-\vspace{5mm}
+
 The purpose of this analysis is to better understand user behavior on Wikimedia over time. In order to facilitate my time-based analysis the following data has been added using the `timestamp` column.   
 
 
@@ -42,15 +44,15 @@ There is a steady distribution of requests over the week and over every month in
 
 Looking at the data from beginning to end shows that there is a high correlation between the number of clicks, results, and start queries being made. This means that these counts moved in the same direction over time. Another thing to notice is the large jump and fall in December and mid-April across all actions.  
 
-```{r,fig.height=20, fig.width=20}
+```{r,fig.height=6, fig.width=10}
 grid.arrange(timeclicks,timestarts,timeresults,
              main = textGrob("Event Action by Week",
-             gp=gpar(fontsize=60)))
+             gp=gpar(fontsize=20)))
 ```
-
+\clearpage
 One of the prime variables in this analysis is `event_timeToDisplayResults`. This is an important variable because if `event_timeToDisplayResults` is consistently high, users can grow impatient and abandon a webpage. The following histogram shows the distribution of `event_timeToDisplayResults`. For visual purposes I have removed values greater than 2000. These removed values represent only 2.4% of the data.
 
-```{r,fig.height=10, fig.width=20}
+```{r,fig.height=8, fig.width=20}
 resulthistogram
 ```
 
@@ -63,7 +65,7 @@ The following heat map exposes an interesting insight with respect to `event_tim
 ```{r,fig.height=10, fig.width=20}
 eventheat
 ```
-
+\clearpage
 I took same approach when exploring the frequency of requests (results, clicks, and starts) throughout the week. The heat map for this inspection shows us that users are making most of their requests during 12:00PM - 11PM. The highest level of requests occurs during this time on Sunday.
 
 ```{r,fig.height=10, fig.width=20}
@@ -71,7 +73,7 @@ heataction
 ```
 
 
-<h2 align="center">Recommendations</h2>
+\section{Recommendations}
 
 After digging into the data, I think there are a few things that need to be investigated further.
 
