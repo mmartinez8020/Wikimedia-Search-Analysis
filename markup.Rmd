@@ -2,22 +2,12 @@
 title: "Wikimedia Analysis"
 author: "Mark Martinez"
 date: "May 24, 2015"
-output: html_document
+output: pdf_document
 fontsize: 12pt
-
 ---
-<style type="text/css">
-
-body, td {
-   font-size: 14px;
-}
-
-</style>
-<h1 align="center">Wikimedia Search Analysis</h1>
-<h2 align="center"" font-weight= "normal">Mark Martinez</h2>
-<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wikimedia_Foundation_RGB_logo_with_text.svg/400px-Wikimedia_Foundation_RGB_logo_with_text.svg.png" height="300" width="300">
 
 
+![alt text](http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wikimedia_Foundation_RGB_logo_with_text.svg/400px-Wikimedia_Foundation_RGB_logo_with_text.svg.png)
 
 
 ```{r, echo=FALSE} 
@@ -25,10 +15,11 @@ opts_chunk$set(echo=FALSE)
 ```
 
 In this analysis I will be reviewing 1 million Wikimedia requests made between November 25, 2014 and May 15, 2015.
+\vspace{5mm}
 The purpose of this analysis is to better understand user behavior on Wikimedia over time. In order to facilitate my time-based analysis the following data has been added using the `timestamp` column.   
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align ='center'}
 head(request[,c(4,5,6)])
 ```   
 

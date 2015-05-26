@@ -124,6 +124,7 @@ timeresults <- timeseriesplot("results","Results")
 grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 60)))
  
 knit('markup.rmd', 'docs.md')
-markdownToHTML('docs.md', 'WikimediaAnalysis.html', header = TRUE)
-
-
+markdownToHTML('docs.md', 'WikimediaAnalysis.pdf', header = TRUE)
+install.packages("rmarkdown")
+library('rmarkdown')
+render("markup.Rmd", "pdf_document")
