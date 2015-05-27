@@ -121,7 +121,6 @@ timeclicks <- timeseriesplot("click","Clicks")
 timeresults <- timeseriesplot("results","Results")
 
 
-
 grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 20)))
  
 knit('markup.rmd', 'docs.md')
