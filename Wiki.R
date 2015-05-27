@@ -9,7 +9,7 @@ require(markdown)
 require(rmarkdown)
 options(scipen=999)
 
-request <- read.table("search_dataset.tsv", sep="\t", header=TRUE)
+request <- read.table("search_dataset.tsv", sep = "\t", header = TRUE)
 
 ###Convert timestamp to date
 request$timestamp <- strptime(request$timestamp, "%Y%m%d%H%M%S")
@@ -21,7 +21,7 @@ request$Weekday <- factor(request$Weekday, levels= c("Monday", "Tuesday", "Wedne
 request$Hour <- substr(request$timestamp , 12, 13)
 
 request$Month <- months(request$timestamp)
-request$Month <- factor(request$Month, levels= c("November","December","January","February","March","April","May"))
+request$Month <- factor(request$Month, levels = c("November", "December", "January", "February", "March", "April", "May"))
 
 
 ###Bar plots
@@ -74,24 +74,24 @@ colnames(averagedaterequest)[3] <- "Median"
 eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median )) + 
               geom_tile(aes(fill = Median), colour = "white") +
               scale_fill_gradient(low = "white",high = "steelblue") +
-              theme(axis.text=element_text(size = 20),
-                    axis.title=element_text(size = 40,face="bold"),
-                    legend.text=element_text(size = 20),
-                    legend.title=element_text(size = 20)) 
+              theme(axis.text = element_text(size = 20),
+                    axis.title = element_text(size = 40,face="bold"),
+                    legend.text = element_text(size = 20),
+                    legend.title = element_text(size = 20)) 
 
 eventheat
 
 ###Heat map of frequency of actions
-freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
+freqofactions <- request[ ,c(4,5)]  %>%  group_by(Weekday, Hour)  %>%
   summarize(Count = n())
 
 heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
-                geom_tile(aes(fill=Count), colour = "white") +
+                geom_tile(aes(fill = Count), colour = "white") +
                 scale_fill_gradient(low = "white",high = "steelblue") +
-                theme(axis.text=element_text(size = 20),
-                      axis.title=element_text(size = 40,face = "bold"),
-                      legend.text=element_text(size = 20),
-                      legend.title=element_text(size = 20)) 
+                theme(axis.text = element_text(size = 20),
+                      axis.title = element_text(size = 40,face = "bold"),
+                      legend.text = element_text(size = 20),
+                      legend.title = element_text(size = 20)) 
 
 
 
@@ -112,7 +112,7 @@ timeseriesplot <- function(action, label){
             geom_line() +
             theme(axis.text=element_text(size = 10),
             axis.title=element_text(size = 20),
-            legend.text=element_text(siz e = 10),
+            legend.text=element_text(size = 10),
             legend.title=element_text(size = 10)) 
   return(plot)
 }
