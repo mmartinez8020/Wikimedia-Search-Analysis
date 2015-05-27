@@ -31,13 +31,13 @@ plottingfunction <- function(request, xlabel){
   newDf$request <- factor(newDf$request, orders)
   
   plot <- ggplot(newDf, aes(x = request, y = Freq)) +
-    geom_bar(fill="lightblue", colour="black", stat = "identity") +
+    geom_bar(fill = "lightblue", colour = "black", stat = "identity") +
     xlab(xlabel) +
     ylab("Frequency") +
     coord_flip() +
-    theme(axis.text = element_text(size=20),
-          axis.title = element_text(size=40, face="bold"),
-          plot.title = element_text(size =60, face="bold", lineheight=.8))
+    theme(axis.text = element_text(size = 20),
+          axis.title = element_text(size = 40, face="bold"),
+          plot.title = element_text(size = 60, face="bold", lineheight=.8))
   
   return(plot)
 }
@@ -53,16 +53,17 @@ grid.arrange(eventactionbar, weekdaybar, monthbar, ncol=3)
 resulthist <- request[request$event_action == "results" & (request$event_timeToDisplayResults < 2000), ] #Cut off long tail
 resulthist <- resulthist[resulthist$event_timeToDisplayResults > 0, ]
 
-resulthistogram <- ggplot(resulthist, aes(x=event_timeToDisplayResults, y = ..density..)) + 
-                      geom_histogram(fill="white", colour="black") + 
+resulthistogram <- ggplot(resulthist, aes(x = event_timeToDisplayResults, y = ..density..)) + 
+                      geom_histogram(fill = "white", colour = "black") + 
                       xlab("Time to Display Results") + 
                       ylab("Density") +
                       ggtitle("Histogram of Time to Display Results") +
-                      theme(axis.text=element_text(size=15),
-                            axis.title = element_text(size=30,face="bold"),
-                            plot.title = element_text(size =45, face="bold",lineheight=.8))
+                      theme(axis.text=element_text(size = 15),
+                            axis.title = element_text(size = 30,face = "bold"),
+                            plot.title = element_text(size = 45, face = "bold",lineheight = .8))
 
 resulthistogram
+
 ###Average request by Weekday + Hour for heat map
 results <- request[request$event_action == "results", ]
 averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, data = results, FUN= "median" )
@@ -71,26 +72,26 @@ averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, dat
 ###Heat map for event_timeToDisplayResults
 colnames(averagedaterequest)[3] <- "Median"
 eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median )) + 
-              geom_tile(aes(fill=Median), colour="white") +
+              geom_tile(aes(fill = Median), colour = "white") +
               scale_fill_gradient(low = "white",high = "steelblue") +
-              theme(axis.text=element_text(size=20),
-                    axis.title=element_text(size=40,face="bold"),
-                    legend.text=element_text(size=20),
-                    legend.title=element_text(size=20)) 
+              theme(axis.text=element_text(size = 20),
+                    axis.title=element_text(size = 40,face="bold"),
+                    legend.text=element_text(size = 20),
+                    legend.title=element_text(size = 20)) 
 
 eventheat
-###Heat map of frequency of actions
 
+###Heat map of frequency of actions
 freqofactions <- request[ ,c(4,5)] %>% group_by(Weekday, Hour)  %>%
   summarize(Count = n())
 
 heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
                 geom_tile(aes(fill=Count), colour = "white") +
                 scale_fill_gradient(low = "white",high = "steelblue") +
-                theme(axis.text=element_text(size=20),
-                      axis.title=element_text(size=40,face = "bold"),
-                      legend.text=element_text(size=20),
-                      legend.title=element_text(size=20)) 
+                theme(axis.text=element_text(size = 20),
+                      axis.title=element_text(size = 40,face = "bold"),
+                      legend.text=element_text(size = 20),
+                      legend.title=element_text(size = 20)) 
 
 
 
@@ -101,27 +102,27 @@ requestwithoutmonths <- request[!(request$Month == "November" | request$Month ==
 requestwithoutmonths$date  <- as.Date(requestwithoutmonths$timestamp)
 
 requestwithoutmonths$week <- cut(requestwithoutmonths[,"date"],breaks = 'weeks')
-timeseries <- data.frame(table(requestwithoutmonths$week,requestwithoutmonths$event_action))
+timeseries <- data.frame(table(requestwithoutmonths$week, requestwithoutmonths$event_action))
 timeseries$Var1 <- as.Date(timeseries$Var1)
 head(timeseries)
 ##Plotting
 timeseriesplot <- function(action, label){
-  plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x=Var1,y=Freq)) +
+  plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x = Var1,y = Freq)) +
             xlab(label) +
             geom_line() +
-            theme(axis.text=element_text(size=10),
-            axis.title=element_text(size=20),
-            legend.text=element_text(size=10),
-            legend.title=element_text(size=10)) 
+            theme(axis.text=element_text(size = 10),
+            axis.title=element_text(size = 20),
+            legend.text=element_text(siz e = 10),
+            legend.title=element_text(size = 10)) 
   return(plot)
 }
 
-timestarts <- timeseriesplot("start","Starts")
-timeclicks <- timeseriesplot("click","Clicks")
-timeresults <- timeseriesplot("results","Results")
+timestarts <- timeseriesplot("start", "Starts")
+timeclicks <- timeseriesplot("click", "Clicks")
+timeresults <- timeseriesplot("results", "Results")
 
 
-grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week",gp = gpar(fontsize = 20)))
+grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week", gp = gpar(fontsize = 20)))
  
 knit('markup.rmd', 'docs.md')
 markdownToHTML('docs.md', 'WikimediaAnalysis.html', header = TRUE)
