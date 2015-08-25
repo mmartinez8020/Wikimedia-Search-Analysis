@@ -1,4 +1,3 @@
-setwd('/Users/mmartinez/Desktop/Wikimedia-Search-Analysis')
 require(ggplot2)
 require(dplyr)
 require(markdown)
@@ -62,8 +61,6 @@ resulthistogram <- ggplot(resulthist, aes(x = event_timeToDisplayResults, y = ..
                             axis.title = element_text(size = 30,face = "bold"),
                             plot.title = element_text(size = 45, face = "bold",lineheight = .8))
 
-resulthistogram
-
 ###Average request by Weekday + Hour for heat map
 results <- request[request$event_action == "results", ]
 averagedaterequest <- aggregate(event_timeToDisplayResults ~ Weekday + Hour, data = results, FUN= "median" )
@@ -78,8 +75,6 @@ eventheat <- ggplot(averagedaterequest,aes(x = Hour, y = Weekday, fill = Median 
                     axis.title = element_text(size = 40,face="bold"),
                     legend.text = element_text(size = 20),
                     legend.title = element_text(size = 20)) 
-
-eventheat
 
 ###Heat map of frequency of actions
 freqofactions <- request[ ,c(4,5)]  %>%  group_by(Weekday, Hour)  %>%
@@ -101,13 +96,13 @@ heataction <- ggplot(freqofactions,aes(x = Hour, y = Weekday, fill = Count )) +
 requestwithoutmonths <- request[!(request$Month == "November" | request$Month == "May"), ] ##Remove November and May dates from df
 requestwithoutmonths$date  <- as.Date(requestwithoutmonths$timestamp)
 
-requestwithoutmonths$week <- cut(requestwithoutmonths[,"date"],breaks = 'weeks')
+requestwithoutmonths$week <- cut(requestwithoutmonths[,"date"], breaks = 'weeks')
 timeseries <- data.frame(table(requestwithoutmonths$week, requestwithoutmonths$event_action))
 timeseries$Var1 <- as.Date(timeseries$Var1)
 head(timeseries)
 ##Plotting
 timeseriesplot <- function(action, label){
-  plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x = Var1,y = Freq)) +
+  plot <- ggplot(timeseries[timeseries$Var2 == action,],aes(x = Var1, y = Freq)) +
             xlab(label) +
             geom_line() +
             theme(axis.text=element_text(size = 10),
@@ -122,7 +117,7 @@ timeclicks <- timeseriesplot("click", "Clicks")
 timeresults <- timeseriesplot("results", "Results")
 
 
-grid.arrange(timeclicks,timestarts,timeresults,main = textGrob("Event Action by Week", gp = gpar(fontsize = 20)))
+grid.arrange(timeclicks, timestarts, timeresults, main = textGrob("Event Action by Week", gp = gpar(fontsize = 20)))
  
 knit('markup.rmd', 'docs.md')
 markdownToHTML('docs.md', 'WikimediaAnalysis.html', header = TRUE)
